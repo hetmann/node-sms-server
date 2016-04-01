@@ -52,7 +52,7 @@ let getParams = (req) => {
 router.all('/identify', (req, res) => {
    SMS.identify((response) => {
       res.json({
-         response: response,
+         response: response.trim().split('\\n'),
          time: time,
          status: 200
       });
