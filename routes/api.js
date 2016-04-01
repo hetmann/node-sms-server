@@ -48,6 +48,17 @@ let getParams = (req) => {
    };
 };
 
+/* GET api/identify page. */
+router.all('/identify', (req, res) => {
+   SMS.identify({to: params.to, text: params.text}, (response) => {
+      res.json({
+         response: response,
+         time: time,
+         status: 200
+      });
+   });
+});
+
 /* GET/POST api/message page. */
 router.all('/message', (req, res) => {
    let params = getParams(req);
@@ -64,15 +75,15 @@ router.all('/message', (req, res) => {
    } else if (params.text && params.text.length > 160) {
       res.json(err('text', 'Text message length > 160'));
    } else {
-      let log = SMS.send({to: params.to, text: params.text});
-
-      res.json({
-         to: params.to,
-         text: params.text,
-         count: params.text.length,
-         time: time,
-         status: 200,
-         log: log
+      SMS.send({to: params.to, text: params.text}, (response) => {
+         res.json({
+            response: response,
+            to: params.to,
+            text: params.text,
+            count: params.text.length,
+            time: time,
+            status: 200
+         });
       });
    }
 });
