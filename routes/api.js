@@ -50,7 +50,7 @@ let getParams = (req) => {
 
 /* GET api/identify page. */
 router.all('/identify', (req, res) => {
-   SMS.identify({to: params.to, text: params.text}, (response) => {
+   SMS.identify((response) => {
       res.json({
          response: response,
          time: time,
