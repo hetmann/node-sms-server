@@ -4,44 +4,75 @@ let express = require('express');
 let router = express.Router();
 
 let config = require('../lib/config');
-let sms = require('../lib/sms');
+let SMS = require('../lib/sms');
 
 let time = new Date().getTime();
-let err = (message) => {
+let err = (key, message) => {
    return ({
       error: {
-         message: message
+         [(key || message)]: message
       },
       time: time,
       status: 404
    });
 };
-/* GET api/sms page. */
 
-router.get('/message', (req, res) => {
-   let apiKey = req.query.api_key ? config.keys[req.query.api_key.toString()] : false;
-   let apiSecret = req.query.api_secret ? req.query.api_secret.toString() : false;
-   let to = req.query.to ? req.query.to.toString() : false;
-   let text = req.query.text ? req.query.text.toString() : false;
+let getParams = (req) => {
+   let apiKey = false;
+   let apiSecret = false;
+   let to = false;
+   let text = false;
+   let type = 'text';
+   switch (req.method) {
+      case 'POST':
+         apiKey = req.body.api_key ? config.keys[req.body.api_key.toString()] : false;
+         apiSecret = req.body.api_secret ? req.body.api_secret.toString() : false;
+         to = req.body.to ? req.body.to.toString() : false;
+         text = req.body.text ? req.body.text.toString() : false;
+         type = req.body.type ? req.body.type.toString() : 'text';
+         break;
+      default:
+         apiKey = req.query.api_key ? config.keys[req.query.api_key.toString()] : false;
+         apiSecret = req.query.api_secret ? req.query.api_secret.toString() : false;
+         to = req.query.to ? req.query.to.toString() : false;
+         text = req.query.text ? req.query.text.toString() : false;
+         type = req.query.type ? req.query.type.toString() : 'text';
+         break;
+   }
+   return {
+      to: to,
+      text: text,
+      type: type,
+      apiKey: apiKey,
+      apiSecret: apiSecret
+   };
+};
+
+/* GET/POST api/message page. */
+router.all('/message', (req, res) => {
+   let params = getParams(req);
    let toExp = new RegExp('^07([0-9]{8})$');
 
-   if (!apiKey) {
-      res.json(err('API Key invalid or not set'));
-   } else if (apiKey && apiKey !== apiSecret) {
-      res.json(err('API Secret invalid or not set'));
-   } else if (!to || (to && !toExp.test(to)) ) {
-      res.json(err('Phone number invalid or not set'));
-   } else if (!text) {
-      res.json(err('Text message not set'));
-   } else if (text && text.length > 160) {
-      res.json(err('Text message length > 160'));
+   if (!params.apiKey) {
+      res.json(err('api_key', 'API Key invalid or not set'));
+   } else if (params.apiKey && params.apiKey !== params.apiSecret) {
+      res.json(err('api_secret', 'API Secret invalid or not set'));
+   } else if (!params.to || (params.to && !toExp.test(params.to)) ) {
+      res.json(err('to', 'Phone number invalid or not set'));
+   } else if (!params.text) {
+      res.json(err('text', 'Text message not set'));
+   } else if (params.text && params.text.length > 160) {
+      res.json(err('text', 'Text message length > 160'));
    } else {
+      let log = SMS.send({to: params.to, text: params.text});
+
       res.json({
-         to: to,
-         text: text,
-         count: text.length,
+         to: params.to,
+         text: params.text,
+         count: params.text.length,
          time: time,
-         status: 200
+         status: 200,
+         log: log
       });
    }
 });

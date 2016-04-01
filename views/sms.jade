@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  script(type='text/javascript').
+    let api_key = 'madalin';
+    let api_secret = 'Madalin_Secret_Key';
+
+    $(function() {
+      $('[name=send]').click(() => {
+        let to = $('[name=to]').val();
+        let text = $('[name=text]').val();
+
+        $.post(
+          "/api/message",
+          {
+            api_key: api_key,
+            api_secret: api_secret,
+            to: to,
+            text: text
+          },
+          function(data, status){
+            console.log(data);
+          },
+          'json'
+        );
+      });
+    });
+  h1= title
+  form(name="sms", method="post")
+    div.input
+        input(type="number", name="to", placeholder="Phone number")
+    div.input
+        textarea(name="text", placeholder="New text message", cols="40", rows="5" maxlength="160")
+    div.actions
+        input(type="button", name="send", value="SEND")
