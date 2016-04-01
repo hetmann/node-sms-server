@@ -51,8 +51,21 @@ let getParams = (req) => {
 /* GET api/identify page. */
 router.all('/identify', (req, res) => {
    SMS.identify((response) => {
+      let identify = response.trim().split('\n');
       res.json({
-         response: response.trim().split('\\n'),
+         response: identify,
+         time: time,
+         status: 200
+      });
+   });
+});
+
+/* GET api/networkinfo page. */
+router.all('/networkinfo', (req, res) => {
+   SMS.networkinfo((response) => {
+      let networkinfo = response.trim().split('\n');
+      res.json({
+         response: networkinfo,
          time: time,
          status: 200
       });
