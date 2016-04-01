@@ -27,9 +27,10 @@ block content
     });
   h1= title
   form(name="sms", method="post")
-    div.input
-        input(type="number", name="to", placeholder="Phone number")
-    div.input
-        textarea(name="text", placeholder="New text message", cols="40", rows="5" maxlength="160")
-    div.actions
-        input(type="button", name="send", value="SEND")
+    div
+        input(type="number", name="to", class="full" placeholder="Phone number")
+    div
+        textarea(name="text", class="full" placeholder="New text message", cols="40", rows="5" maxlength="160")
+    div
+        button(type="button", name="send", class="full").
+          SEND

@@ -48,8 +48,20 @@ let getParams = (req) => {
    };
 };
 
+/* GET api/getall page. */
+router.get('/getall', (req, res) => {
+   SMS.getall((response) => {
+      let getall = response.trim().split('\n');
+      res.json({
+         response: getall,
+         time: time,
+         status: 200
+      });
+   });
+});
+
 /* GET api/identify page. */
-router.all('/identify', (req, res) => {
+router.get('/identify', (req, res) => {
    SMS.identify((response) => {
       let identify = response.trim().split('\n');
       res.json({
@@ -61,7 +73,7 @@ router.all('/identify', (req, res) => {
 });
 
 /* GET api/networkinfo page. */
-router.all('/networkinfo', (req, res) => {
+router.get('/networkinfo', (req, res) => {
    SMS.networkinfo((response) => {
       let networkinfo = response.trim().split('\n');
       res.json({
@@ -88,11 +100,12 @@ router.all('/message', (req, res) => {
    } else if (params.text && params.text.length > 160) {
       res.json(err('text', 'Text message length > 160'));
    } else {
-      SMS.send({to: params.to, text: params.text}, (response) => {
+      SMS.send(params, (response) => {
          res.json({
             response: response,
             to: params.to,
             text: params.text,
+            type: params.type,
             count: params.text.length,
             time: time,
             status: 200
