@@ -13,8 +13,7 @@ More GAMMU information at:
 2. **node.js** for the API server
 
 #### Features
-
-[] status page with GSM Status
-[] messages logging to sql / mongo / sqlite
-[] gateways option for multiple USB GSM modems
-[] choose a gateway (USB GSM modem) to send messages
+- [ ] status page with GSM Status
+- [ ] messages logging to sql / mongo / sqlite
+- [ ] gateways option for multiple USB GSM modems
+- [ ] choose a gateway (USB GSM modem) to send messages
