@@ -17,3 +17,5 @@ More GAMMU information at:
 - [ ] messages logging to sql / mongo / sqlite
 - [ ] gateways option for multiple USB GSM modems
 - [ ] choose a gateway (USB GSM modem) to send messages
+- [ ] voting system
+- [ ] auto-response system based on predefined regex/string
