@@ -3,6 +3,7 @@
 let express = require('express');
 let router = express.Router();
 
+let serialport = require('serialport');
 let config = require('../lib/config');
 let SMS = require('../lib/sms');
 
@@ -78,6 +79,28 @@ router.get('/networkinfo', (req, res) => {
       let networkinfo = response.trim().split('\n');
       res.json({
          response: networkinfo,
+         time: time,
+         status: 200
+      });
+   });
+});
+
+/* GET api/gateways page. */
+router.get('/gateways', (req, res) => {
+   let usbPorts = [];
+
+   serialport.list((err, ports) => {
+      ports.forEach((port) => {
+         if (port) {
+            usbPorts.push(port);
+         }
+      });
+      
+      res.json({
+         response: {
+            gateways: usbPorts,
+            count: usbPorts.length
+         },
          time: time,
          status: 200
       });
